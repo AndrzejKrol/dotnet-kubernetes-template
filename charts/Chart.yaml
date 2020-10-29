@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Helm chart for dotnet kubernetes template web api
+name: dotnet-kubernetes-template-web-api
+version: 0.0.1

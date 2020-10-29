@@ -1,0 +1,38 @@
+---
+readinessProbe:
+  enabled: false  
+  timeoutSeconds: 5
+  periodSeconds: 10
+  initialDelaySeconds: 10
+  failureThreshold: 30
+  http:
+    path: /health/ready
+    port: 5000
+livenessProbe:
+  enabled: true
+  timeoutSeconds: 5
+  periodSeconds: 15
+  initialDelaySeconds: 10
+  failureThreshold: 30
+  http:
+    path: /health/live
+    port: 5000
+service:
+  port: 80
+  targetPort: 5000
+  type: ClusterIP
+container:
+  image: localhost:5000/dotnet-kubernetes-template-web-api
+  port: 5000
+ingress:
+  path: /
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 1
+  limits:
+    memory: 1024Mi
+    cpu: 2
+replicas: 1
+config:
+  SAMPLE__VARIABLE: SAMPLE_VALUE

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30621.155
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetKubernetesTemplate.Api", "src\DotNetKubernetesTemplate.Api\DotNetKubernetesTemplate.Api.csproj", "{44FFA8AE-7181-43A3-9020-EBAF8407644C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{44FFA8AE-7181-43A3-9020-EBAF8407644C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44FFA8AE-7181-43A3-9020-EBAF8407644C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44FFA8AE-7181-43A3-9020-EBAF8407644C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44FFA8AE-7181-43A3-9020-EBAF8407644C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ED53F7C4-A632-4E09-928E-F580A84311F6}
+	EndGlobalSection
+EndGlobal

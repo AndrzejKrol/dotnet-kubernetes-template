@@ -1,0 +1,91 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicas | default 1 }}
+  selector:
+    matchLabels:
+      {{- include "chart.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        {{- include "chart.selectorLabels" . | nindent 8 }}
+      annotations:
+        configmap-etc-hash: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}
+          image: {{ .Values.container.image }}
+          {{- if .Values.resources }}
+          resources:
+            requests:
+              memory: {{ .Values.resources.requests.memory }}
+              cpu: {{ .Values.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.resources.limits.memory }}
+              cpu: {{ .Values.resources.limits.cpu }}
+          {{- end }}
+          ports:
+            - containerPort: {{ .Values.container.port}}
+          imagePullPolicy: {{ .Values.pullPolicy | default "Always" }}
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            {{- if .Values.livenessProbe.http }}
+            httpGet:
+              path: {{ .Values.livenessProbe.http.path | default "/health/live" }}
+              port: {{ .Values.livenessProbe.http.port }}
+            {{- end }}
+            {{- if .Values.livenessProbe.exec }}
+            exec:
+              command: {{ .Values.livenessProbe.exec.command }}
+            {{- end }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds | default 15 }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds | default 3 }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds | default 1 }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold | default 1 }}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            {{- if .Values.readinessProbe.http }}
+            httpGet:
+              path: {{ .Values.readinessProbe.http.path | default "/health/ready" }}
+              port: {{ .Values.readinessProbe.http.port }}
+            {{- end }}
+            {{- if .Values.readinessProbe.exec }}
+            exec:
+              command: {{ .Values.readinessProbe.exec.command }}
+            {{- end }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds | default 15 }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds | default 3 }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds | default 1 }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold | default 1 }}
+          {{- end }}
+          env:
+{{- if .Values.env }}
+{{ toYaml .Values.env | indent 12 }}
+{{- end }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-envs
+            {{- range $k, $v := .Values.secrets }}
+            - secretRef:
+                name: {{$v}}
+            {{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.pullSecrets }}
+      imagePullSecrets: 
+{{ toYaml .Values.pullSecrets | indent 8 }}
+    {{- end }}
